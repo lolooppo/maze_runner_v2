@@ -10,11 +10,12 @@
 
 
 void init_grid(int, int);
-void draw_grid();
+void draw_grid(bool);
 void draw_grid_unit(int, int);
 void draw_runner_unit();
 void draw_target_unit();
 void draw_wall_unit(int, int);
+void draw_path_unit(int, int);
 void move_runner();
 bool valid_move(int, int);
 bool win();
