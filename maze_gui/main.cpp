@@ -28,6 +28,7 @@ std::chrono::time_point<std::chrono::system_clock> Start;//stores the current ti
 
 int main(int argc, char **argv){
     generate_maze();
+    solve_maze();
     Start = std::chrono::system_clock::now();
 
     glutInit(&argc, argv);
@@ -50,24 +51,26 @@ void init_color(){
     init_grid(COLUMNS, ROWS);
 }
 
-
+bool is_lost{false};
 
 void display_call_back(){
     glClear(GL_COLOR_BUFFER_BIT);
 
+    //check lose
+    if(is_lost){
+        MessageBox(NULL, "\tYOU LOST", "\t\tSORRY", 100);
+        exit(0);
+
+    }
     //check win
     if(win()){
-        MessageBox(NULL, "\tYOU DID IT BEFORE THE TIME ENDS", "\t\tCONGRATS", 100);
-        exit(0);
-    }
-    //check lose
-    if(lose(Start)){
-        MessageBox(NULL, "\tYOU LOST", "\t\tSORRY", 100);
+        MessageBox(NULL, "\tYOU DID IT", "\t\tCONGRATS", 100);
         exit(0);
     }
 
+    is_lost = lose(Start);
     move_runner();
-    draw_grid();
+    draw_grid(is_lost);
     next_direction = 0;//reset to 0, to prevent keep moving without key pressing
     glutSwapBuffers();
 }
