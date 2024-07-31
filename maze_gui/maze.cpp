@@ -22,8 +22,8 @@ bool visited[41][41]{0};
 
 
 //check if the given row and column valid or not
-bool valid(int r, int c){
-    return r>-1 and r<2*N+1 and c>-1 and c<2*N+1;
+bool valid(int x, int y){
+    return x>-1 and x<2*N+1 and y>-1 and y<2*N+1;
 }
 
 
@@ -33,10 +33,10 @@ bool valid(int r, int c){
 */
 //takes a random node and returns its row and column.
 std::pair<int, int>get_row_column(int &node){
-    int r = (node+N-1)/N;
-    int c = node-(r-1)*N;
+    int x = (node+N-1)/N;
+    int y = node-(x-1)*N;
 
-    return{r+r, c+c};
+    return{x+x, y+y};
 }
 
 
@@ -75,11 +75,11 @@ void generate_maze(){
 
     //the initial node to start the algorithm with.
     int node = rand() % (N*N) + 1;
-    std::pair<int, int> rc = get_row_column(node);
-    rc.first--, rc.second--;    //Just to be zero base.
+    std::pair<int, int> xy = get_row_column(node);
+    xy.first--, xy.second--;    //Just to be zero base.
 
-    visited[rc.first][rc.second] = true;
-    st.push(rc);
+    visited[xy.first][xy.second] = true;
+    st.push(xy);
 
     while(!st.empty()){
         std::pair<int, int> curr = st.top();
@@ -88,11 +88,11 @@ void generate_maze(){
         std::vector<int> neighbors;
 
         for(int i=0; i<4; i++){
-            int new_r = curr.first, new_c = curr.second;
-            new_r += dx_cell[i];
-            new_c += dy_cell[i];
+            int new_x = curr.first, new_y = curr.second;
+            new_x += dx_cell[i];
+            new_y += dy_cell[i];
 
-            if(valid(new_r, new_c) and !visited[new_r][new_c]){
+            if(valid(new_x, new_y) and !visited[new_x][new_y]){
                 neighbors.push_back(i);
             }
         }
@@ -109,18 +109,50 @@ void generate_maze(){
         int idx = rand() % neighbors.size();
         int dir = neighbors[idx];
 
-        int cell_r = curr.first, cell_c = curr.second;
-        int wall_r = curr.first, wall_c = curr.second;
+        int cell_x = curr.first, cell_y = curr.second;
+        int wall_x = curr.first, wall_y = curr.second;
 
-        cell_r+=dx_cell[dir], cell_c+=dy_cell[dir];
-        wall_r+=dx_wall[dir], wall_c+=dy_wall[dir];
+        cell_x+=dx_cell[dir], cell_y+=dy_cell[dir];
+        wall_x+=dx_wall[dir], wall_y+=dy_wall[dir];
 
 
 
-        visited[cell_r][cell_c] = true;
-        arr[wall_r][wall_c] = ' ';
+        visited[cell_x][cell_y] = true;
+        arr[wall_x][wall_y] = ' ';
 
-        std::pair<int, int> node = {cell_r, cell_c};
+        std::pair<int, int> node = {cell_x, cell_y};
         st.push(node);
+    }
+}
+
+
+//(Backtrack Depth First Search)for solving the maze
+std::vector<std::pair<int, int>> path;
+bool dfs(int x, int y){
+    //check if we reached the target point
+    if(x==1 and y==39){
+        path.push_back({x,y});
+        return true;
+    }
+
+    visited[x][y] = true;
+    path.push_back({x,y});
+
+    for(int i=0; i<4; i++){
+        if(valid(x+dx_wall[i], y+dy_wall[i]) and arr[x+dx_wall[i]][y+dy_wall[i]]==' ' and !visited[x+dx_wall[i]][y+dy_wall[i]]){
+            if(dfs(x+dx_wall[i], y+dy_wall[i]))
+                return true;
+        }
+    }
+
+    //backtrack
+    path.pop_back();
+    return false;
+}
+void solve_maze(){
+    memset(visited, false, sizeof(visited));
+    dfs(39, 1);
+    for(auto &p:path){
+        arr[p.first][p.second] = 'S';
     }
 }
