@@ -25,16 +25,25 @@ void init_grid(int x, int y){
 
 
 //draw the grid
-void draw_grid(){
+void draw_grid(bool is_lost = false){
+
+    //set the position of the runner to the initial, to draw the solution from it to the target position
+    if(is_lost){
+        runner_x = 1, runner_y = 39;
+    }
+
     for(int x=0; x<grid_x; x++){
         for(int y=0; y<grid_y; y++){
                 if(x == runner_x and y == runner_y){
                     draw_runner_unit();
                 }else if(x == target_x and y == target_y){
                     draw_target_unit();
-                }else if(arr[x][y] != ' '){
+                }else if(arr[x][y] == '-' or arr[x][y] == '!'){
                     draw_wall_unit(x, y);
+                }else if(is_lost and arr[x][y] == 'S'){
+                    draw_path_unit(x, y);
                 }
+                glColor3f(0.0, 0.0, 1.0);
                 draw_grid_unit(x, y);
         }
     }
@@ -79,7 +88,6 @@ void draw_runner_unit(){
 void draw_target_unit(){
     glColor3f(0.0, 1.0, 0.0);
     glRectd(target_x, target_y, target_x+1, target_y+1);
-    glColor3f(0.0, 0.0, 1.0);
 }
 
 
@@ -87,9 +95,13 @@ void draw_target_unit(){
 void draw_wall_unit(int x,int y){
     glColor3f(1.0, 0.0, 0.0);
     glRectd(x, y, x+1, y+1);
-    glColor3f(0.0, 0.0, 1.0);
 }
 
+
+void draw_path_unit(int x, int y){
+    glColor3f(1.0f, 1.0f, 0.0f);
+    glRectd(x, y, x+1, y+1);
+}
 
 
 bool win(){
@@ -99,11 +111,11 @@ bool lose(chrono::time_point<std::chrono::system_clock> Start){
     auto End = std::chrono::system_clock::now();
     auto duration = End - Start;
     auto duration_seconds = std::chrono::duration_cast<chrono::seconds>(duration).count();
-    return duration_seconds > 60;
+    return duration_seconds > 120;
 }
 
 
 
 bool valid_move(int x, int y){
-    return x>=0 and x<=40 and y>=0 and y<=40 and arr[x][y] == ' ';
+    return x>=0 and x<=40 and y>=0 and y<=40 and (arr[x][y] == ' ' or arr[x][y] == 'S');
 }
