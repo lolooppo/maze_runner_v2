@@ -8,5 +8,5 @@ OK, it is a little bit hard to say it but, you have only to use your keyboard ar
 
 
 ### Installation:
-install any MinGW c++ compiler and set up opengl library, then install the project and finally run it.
+Install any MinGW c++ compiler and set up opengl library, then install the project and finally run it.
 if you face any installation problem just follow this [video](https://www.youtube.com/watch?v=14atQ1GTNYg&t=2s). 
