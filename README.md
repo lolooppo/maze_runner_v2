@@ -4,7 +4,7 @@ This 2D maze solver game challenges players to navigate through a randomly gener
 
 
 ### How to play:
-OK, it is a little bit hard to say it but, you have only to use your keyboard arrows :).
+OK, it is a little bit hard to say but, you have only to use your keyboard arrows :).
 
 
 ### Installation:
